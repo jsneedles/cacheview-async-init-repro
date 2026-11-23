@@ -1,0 +1,25 @@
+@namespace CacheViewRepro
+@page "/"
+@using Microsoft.AspNetCore.Components
+@attribute [StreamRendering(false)]
+
+@if (Variant == "plain" || _ready)
+{
+    <CacheView CacheKey="marketing" VaryBy="@Variant" ExpiresAfter="TimeSpan.FromDays(7)">
+        <p>cached-marketing @Guid.NewGuid()</p>
+    </CacheView>
+    <CacheView CacheKey="second" VaryBy="@Variant" ExpiresAfter="TimeSpan.FromDays(7)">
+        <p>second-marketing @Guid.NewGuid()</p>
+    </CacheView>
+}
+
+@code {
+    [SupplyParameterFromQuery(Name = "variant")] public string? Variant { get; set; }
+    private bool _ready;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(50);
+        _ready = true;
+    }
+}
